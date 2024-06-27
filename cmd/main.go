@@ -22,20 +22,44 @@ func newTemplate() *Templates {
     }
 }
 
-type Count struct {
-    Count int
+type Round struct {
+    OpponentName string
+    Win int
+    Loss int
+}
+
+func newRound(opponentName string, win int, loss int) Round {
+    return Round{
+        OpponentName: opponentName,
+        Win: win,
+        Loss: loss,
+    }
+}
+
+type Rounds = []Round
+
+type Data struct {
+    Rounds Rounds
+}
+
+func newData() Data {
+    return Data{
+        Rounds: []Round{
+            newRound("test1", 10, 0),
+            newRound("test2", 0, 10),
+        },
+    }
 }
 
 func main() {
     e := echo.New()
     e.Use(middleware.Logger())
 
-    count := Count { Count: 0 }
+    data := newData()
     e.Renderer = newTemplate()
 
     e.GET("/", func(c echo.Context) error {
-        count.Count++
-        return c.Render(200, "index", count)
+        return c.Render(200, "index", data)
     })
     e.Logger.Fatal(e.Start(":2000"))
 }

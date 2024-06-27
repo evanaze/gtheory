@@ -2,14 +2,31 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title></title>
+        <title>Tourney</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="css/style.css">
+        <script src="https://unpkg.com/htmx.org@2.0.0" integrity="sha384-wS5l5IKJBvK6sPTKa2WZ1js3d947pvWXbPJ1OmWfEuxLgeHcEbjUUA5i9V5ZkpCw" crossorigin="anonymous"></script>
     </head>
     <body>
-        Count {{ .Count }}
+        <h1>Tourney</h1>
+        <h2>Rounds</h2>
+        <div id="rounds">
+            {{ template "rounds" . }}
+        </div>
     </body>
 </html>
+{{ end }}
+
+{{ block "rounds" . }}
+    <div style="display: flex; flex-direction: column">
+    {{ range .Rounds }}
+    <div>
+        Opponent Name: <span>{{ .OpponentName }}</span>
+        Wins: <span>{{ .Win }}</span>
+        Losses: <span>{{ .Loss }}</span>
+    </div>
+    {{ end }}
+    </div>
 {{ end }}
 
