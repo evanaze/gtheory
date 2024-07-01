@@ -10,6 +10,10 @@
     </head>
     <body>
         <h1>Tourney</h1>
+        <h2>Your Agent</h2>
+        <div id="agent">
+            {{ template "agent" . }}
+        </div>
         <h2>Rounds</h2>
         <div id="rounds">
             {{ template "rounds" . }}
@@ -28,5 +32,8 @@
     </div>
     {{ end }}
     </div>
+{{ end }}
+
+{{ block "agent" . }}
 {{ end }}
 
