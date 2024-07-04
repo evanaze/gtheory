@@ -1,38 +1,136 @@
 package main
 
+import (
+    "errors"
+    "math/rand"
+)
+
 
 type Move int8
+type MoveHistory []Move
 
 const (
     Cheat Move = iota
     Cooperate
 )
 
-type cpuAgent struct {
+func inverseMove(move Move) Move {
+    switch move {
+        case Cheat:
+            return Cooperate
+        case Cooperate:
+            return Cheat
+    }
+}
+
+type Agent struct {
     name string
 }
 
-type agent interface {
-    act() Move
+// An interface to the action of an Agent
+type Actor interface {
+    act(agentHistory, oppHistory MoveHistory) (Move, error)
+}
+
+// Define different default agents
+type quidProQuo Agent
+type alwaysCooperate Agent
+type alwaysCheat Agent
+type copycat Agent
+type grudger Agent
+type detective Agent
+
+func (a quidProQuo) act(agentHistory, oppHistory MoveHistory) (Move, error) {
+    var nHistory int = len(oppHistory)
+    if nHistory == 0 {
+        return Cooperate, nil
+    }
+
+    switch mostRecent := oppHistory[nHistory-1]; mostRecent {
+        case Cheat:
+            return Cheat, nil
+        case Cooperate:
+            return Cooperate, nil
+        default:
+            return 0, errors.New("Invalid move in move history")
+    }
+}
+
+// An agent that always cooperates
+func (a alwaysCooperate) act(agentHistory, oppHistory MoveHistory) (Move, error) {
+    return Cooperate, nil
+}
+
+// An agent that always cheats
+func (a alwaysCheat) act(agentHistory, oppHistory MoveHistory) (Move, error) {
+    return Cheat, nil
 }
 
 type BattleResults struct {
-    TotalRounds int
-    AgentName string
-    AgentWins int
-    AgentWinPct float32
-    OpponentName string
-    OpponentWins int
-    OpponentWinPct float32
+    Agent1 Agent
+    Agent1MoveHistory []Move
+    Agent1ScoreHistory []int8
+    Agent2 Agent
+    Agent2MoveHistory []Move
+    Agent2ScoreHistory []int8
 }
 
-func battle(agent1, agent2 agent, nrounds int) BattleResults {
-    for round:=0; round<nrounds; round++ {
-        println()
+type BattleParams struct {
+    CooperateReward int
+    CheatReward int
+    Opacity float32
+    NRounds int
+}
+
+// Calculate the score of the round for each agent
+func score(agent1Move, agent2Move Move, params BattleParams) (agent1Score, agent2Score int) {
+    switch {
+    case agent1Move == Cooperate && agent2Move == Cooperate:
+        output := 1 + params.CooperateReward
+        return output, output
+    case agent1Move == Cooperate && agent2Move == Cheat:
+        return -1, 1 + params.CheatReward
+    case agent1Move == Cheat && agent2Move == Cheat:
+        return 1 + params.CheatReward, -1
+    default:
+        return 0, 0
+    }
+}
+
+// Roll the possibility that the intended move gets obfuscated
+func rollObfuscate(inputMove Move, p float32) Move {
+    var roll = rand.Float32()
+    if roll > p {
+        return inputMove
+    } else {
+        var outputMove = inverseMove(inputMove)
+        return outputMove
+    }
+}
+
+// Execute the battle
+func battle(agent1, agent2 Actor, params BattleParams) BattleResults {
+    var agent1MoveHistory []Move
+    var agent1ScoreHistory []int8
+
+    var agent2MoveHistory []Move
+    var agent2ScoreHistory []int8
+
+    for round:=0; round<params.NRounds; round++ {
+        agent1Move, _ := agent1.act(agent1MoveHistory, agent2MoveHistory)
+        agent1MoveHistory = append(agent1MoveHistory, agent1Move)
+
+        agent2Move, _ := agent2.act(agent2MoveHistory, agent1MoveHistory)
+        agent2MoveHistory = append(agent1MoveHistory, agent2Move)
+
+        agent1Score, agent2Score := score(agent1Move, agent2Move)
+        agent1ScoreHistory = append(agent1ScoreHistory, agent1Score)
+        agent2ScoreHistory = append(agent2ScoreHistory, agent2Score)
     }
     return BattleResults{
-        TotalRounds: nrounds,
-        AgentName: agent1.Name,
+        Agent1: agent1,
+        Agent1MoveHistory: agent1MoveHistory,
+        Agent1ScoreHistory: agent1ScoreHistory,
     }
 }
 
