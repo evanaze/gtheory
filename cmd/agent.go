@@ -15,11 +15,10 @@ const (
 )
 
 func inverseMove(move Move) Move {
-    switch move {
-        case Cheat:
-            return Cooperate
-        case Cooperate:
-            return Cheat
+    if move == Cheat {
+        return Cooperate
+    } else {
+        return Cheat
     }
 }
 
