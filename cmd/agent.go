@@ -66,12 +66,12 @@ func (a alwaysCheat) act(agentHistory, oppHistory MoveHistory) (Move, error) {
 }
 
 type BattleResults struct {
-    Agent1 Agent
+    Agent1 Actor
     Agent1MoveHistory []Move
-    Agent1ScoreHistory []int8
-    Agent2 Agent
+    Agent1ScoreHistory []int
+    Agent2 Actor
     Agent2MoveHistory []Move
-    Agent2ScoreHistory []int8
+    Agent2ScoreHistory []int
 }
 
 type BattleParams struct {
@@ -110,10 +110,10 @@ func rollObfuscate(inputMove Move, p float32) Move {
 // Execute the battle
 func battle(agent1, agent2 Actor, params BattleParams) BattleResults {
     var agent1MoveHistory []Move
-    var agent1ScoreHistory []int8
+    var agent1ScoreHistory []int
 
     var agent2MoveHistory []Move
-    var agent2ScoreHistory []int8
+    var agent2ScoreHistory []int
 
     for round:=0; round<params.NRounds; round++ {
         agent1Move, _ := agent1.act(agent1MoveHistory, agent2MoveHistory)
@@ -122,14 +122,18 @@ func battle(agent1, agent2 Actor, params BattleParams) BattleResults {
         agent2Move, _ := agent2.act(agent2MoveHistory, agent1MoveHistory)
         agent2MoveHistory = append(agent1MoveHistory, agent2Move)
 
-        agent1Score, agent2Score := score(agent1Move, agent2Move)
+        agent1Score, agent2Score := score(agent1Move, agent2Move, params)
         agent1ScoreHistory = append(agent1ScoreHistory, agent1Score)
         agent2ScoreHistory = append(agent2ScoreHistory, agent2Score)
     }
+
     return BattleResults{
         Agent1: agent1,
         Agent1MoveHistory: agent1MoveHistory,
         Agent1ScoreHistory: agent1ScoreHistory,
+        Agent2: agent2,
+        Agent2MoveHistory: agent2MoveHistory,
+        Agent2ScoreHistory: agent1ScoreHistory,
     }
 }
 
