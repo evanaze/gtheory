@@ -22,33 +22,17 @@ func newTemplate() *Templates {
     }
 }
 
-type Round struct {
+type Battle struct {
     OpponentName string
-    Win int
-    Loss int
+    Score int
+    ScoreHistory []int
 }
 
-func newRound(opponentName string, win int, loss int) Round {
-    return Round{
-        OpponentName: opponentName,
-        Win: win,
-        Loss: loss,
-    }
-}
-
-type Rounds = []Round
+type Battles = []Battle
 
 type Data struct {
-    Rounds Rounds
-}
-
-func newData() Data {
-    return Data{
-        Rounds: []Round{
-            newRound("test1", 10, 0),
-            newRound("test2", 0, 10),
-        },
-    }
+    Agent Actor
+    Battles Battles
 }
 
 func main() {
@@ -65,8 +49,18 @@ func main() {
     }
 
     results := battle(agent, opponent, params)
+    battle_results := Battle{
+        OpponentName: opponent.name,
+        Score: results.Agent1ScoreTotal,
+        ScoreHistory: results.Agent1ScoreHistory,
+    }
 
-    data := newData()
+    battles := make([]Battle, 1)
+    battles[0] = battle_results
+    data := Data{
+        Agent: agent,
+        Battles: battles,
+    }
     e.Renderer = newTemplate()
 
     e.GET("/", func(c echo.Context) error {

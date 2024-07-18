@@ -22,7 +22,7 @@ func inverseMove(move Move) Move {
     }
 }
 
-type Agent struct {
+type AgentMetadata struct {
     name string
 }
 
@@ -32,12 +32,12 @@ type Actor interface {
 }
 
 // Define different default agents
-type quidProQuo Agent
-type alwaysCooperate Agent
-type alwaysCheat Agent
-type copycat Agent
-type grudger Agent
-type detective Agent
+type quidProQuo AgentMetadata
+type alwaysCooperate AgentMetadata
+type alwaysCheat AgentMetadata
+type copycat AgentMetadata
+type grudger AgentMetadata
+type detective AgentMetadata
 
 func (a quidProQuo) act(agentHistory, oppHistory MoveHistory) (Move, error) {
     var nHistory int = len(oppHistory)
@@ -69,9 +69,11 @@ type BattleResults struct {
     Agent1 Actor
     Agent1MoveHistory []Move
     Agent1ScoreHistory []int
+    Agent1ScoreTotal int
     Agent2 Actor
     Agent2MoveHistory []Move
     Agent2ScoreHistory []int
+    Agent2ScoreTotal int
 }
 
 type BattleParams struct {
@@ -89,7 +91,7 @@ func score(agent1Move, agent2Move Move, params BattleParams) (agent1Score, agent
         return output, output
     case agent1Move == Cooperate && agent2Move == Cheat:
         return -1, 1 + params.CheatReward
-    case agent1Move == Cheat && agent2Move == Cheat:
+    case agent1Move == Cheat && agent2Move == Cooperate:
         return 1 + params.CheatReward, -1
     default:
         return 0, 0
@@ -111,9 +113,11 @@ func rollObfuscate(inputMove Move, p float32) Move {
 func battle(agent1, agent2 Actor, params BattleParams) BattleResults {
     var agent1MoveHistory []Move
     var agent1ScoreHistory []int
+    var agent1ScoreTotal int = 0
 
     var agent2MoveHistory []Move
     var agent2ScoreHistory []int
+    var agent2ScoreTotal int = 0
 
     for round:=0; round<params.NRounds; round++ {
         agent1Move, _ := agent1.act(agent1MoveHistory, agent2MoveHistory)
@@ -124,16 +128,21 @@ func battle(agent1, agent2 Actor, params BattleParams) BattleResults {
 
         agent1Score, agent2Score := score(agent1Move, agent2Move, params)
         agent1ScoreHistory = append(agent1ScoreHistory, agent1Score)
+        agent1ScoreTotal += agent1Score
+
         agent2ScoreHistory = append(agent2ScoreHistory, agent2Score)
+        agent2ScoreTotal += agent2Score
     }
 
     return BattleResults{
         Agent1: agent1,
         Agent1MoveHistory: agent1MoveHistory,
         Agent1ScoreHistory: agent1ScoreHistory,
+        Agent1ScoreTotal: agent1ScoreTotal,
         Agent2: agent2,
         Agent2MoveHistory: agent2MoveHistory,
         Agent2ScoreHistory: agent1ScoreHistory,
+        Agent2ScoreTotal: agent2ScoreTotal,
     }
 }
 

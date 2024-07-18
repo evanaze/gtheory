@@ -14,9 +14,9 @@
         <div id="agent">
             {{ template "agent" . }}
         </div>
-        <h2>Rounds</h2>
-        <div id="rounds">
-            {{ template "rounds" . }}
+        <h2>Battles</h2>
+        <div id="battles">
+            {{ template "battles" . }}
         </div>
     </body>
 </html>
@@ -24,16 +24,18 @@
 
 {{ block "rounds" . }}
     <div style="display: flex; flex-direction: column">
-    {{ range .Rounds }}
+    {{ range .Battles }}
     <div>
         Opponent Name: <span>{{ .OpponentName }}</span>
-        Wins: <span>{{ .Win }}</span>
-        Losses: <span>{{ .Loss }}</span>
+        Score: <span>{{ .Score }}</span>
     </div>
     {{ end }}
     </div>
 {{ end }}
 
 {{ block "agent" . }}
+<div>
+    <h1>{{ .Agent.name }}</h1>
+</div>
 {{ end }}
 
