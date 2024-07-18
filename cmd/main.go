@@ -55,6 +55,17 @@ func main() {
     e := echo.New()
     e.Use(middleware.Logger())
 
+    var agent quidProQuo
+    var opponent alwaysCheat
+    params := BattleParams{
+        CooperateReward: 1,
+        CheatReward: 2,
+        Opacity: 0.05,
+        NRounds: 200,
+    }
+
+    results := battle(agent, opponent, params)
+
     data := newData()
     e.Renderer = newTemplate()
 
