@@ -35,12 +35,25 @@ type Data struct {
     Battles Battles
 }
 
+func runBattles(agent Actor, opponents []Actor, params BattleParams) Battles {
+    var nOpponents int = len(opponents)
+    var battleResults = make([]Battle, nOpponents)
+    for i, opponent := range opponents {
+        result := battle(agent, opponent, params)
+        battleResult := Battle{
+            OpponentName: opponent.Name,
+            Score: result.Agent1ScoreTotal,
+            ScoreHistory: result.Agent1ScoreHistory,
+        }
+        battleResults[i] = battleResult
+    }
+    return battleResults
+}
+
 func main() {
     e := echo.New()
     e.Use(middleware.Logger())
 
-    var agent quidProQuo
-    var opponent alwaysCheat
     params := BattleParams{
         CooperateReward: 1,
         CheatReward: 2,
@@ -48,18 +61,19 @@ func main() {
         NRounds: 200,
     }
 
-    results := battle(agent, opponent, params)
-    battle_results := Battle{
-        OpponentName: opponent.name,
-        Score: results.Agent1ScoreTotal,
-        ScoreHistory: results.Agent1ScoreHistory,
-    }
+    var agent = quidProQuo{"Quid Pro Quo"}
+    var opponents = make([]Actor, 5)
+    opponents[0] = alwaysCheat{"Always Cheat"}
+    opponents[1] = alwaysCooperate{"Always Cooperate"}
+    opponents[2] = copycat{"Copycat"}
+    opponents[3] = grudger{"Grudger"}
+    opponents[4] = detective{"Detective"}
 
-    battles := make([]Battle, 1)
-    battles[0] = battle_results
+    battleResults := runBattles(agent, opponents, params)
+
     data := Data{
         Agent: agent,
-        Battles: battles,
+        Battles: battleResults,
     }
     e.Renderer = newTemplate()
 

@@ -10,10 +10,7 @@
     </head>
     <body>
         <h1>Tourney</h1>
-        <h2>Your Agent</h2>
-        <div id="agent">
-            {{ template "agent" . }}
-        </div>
+        <h2>Your Agent: {{ .Agent.Name }}</h2>
         <h2>Battles</h2>
         <div id="battles">
             {{ template "battles" . }}
@@ -22,7 +19,7 @@
 </html>
 {{ end }}
 
-{{ block "rounds" . }}
+{{ block "battles" . }}
     <div style="display: flex; flex-direction: column">
     {{ range .Battles }}
     <div>
@@ -31,11 +28,5 @@
     </div>
     {{ end }}
     </div>
-{{ end }}
-
-{{ block "agent" . }}
-<div>
-    <h1>{{ .Agent.name }}</h1>
-</div>
 {{ end }}
 

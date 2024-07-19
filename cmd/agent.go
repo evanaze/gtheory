@@ -22,8 +22,8 @@ func inverseMove(move Move) Move {
     }
 }
 
-type AgentMetadata struct {
-    name string
+type Agent struct {
+    Name string
 }
 
 // An interface to the action of an Agent
@@ -32,12 +32,12 @@ type Actor interface {
 }
 
 // Define different default agents
-type quidProQuo AgentMetadata
-type alwaysCooperate AgentMetadata
-type alwaysCheat AgentMetadata
-type copycat AgentMetadata
-type grudger AgentMetadata
-type detective AgentMetadata
+type quidProQuo Agent
+type alwaysCooperate Agent
+type alwaysCheat Agent
+type copycat Agent
+type grudger Agent
+type detective Agent
 
 func (a quidProQuo) act(agentHistory, oppHistory MoveHistory) (Move, error) {
     var nHistory int = len(oppHistory)
@@ -62,6 +62,21 @@ func (a alwaysCooperate) act(agentHistory, oppHistory MoveHistory) (Move, error)
 
 // An agent that always cheats
 func (a alwaysCheat) act(agentHistory, oppHistory MoveHistory) (Move, error) {
+    return Cheat, nil
+}
+
+// A copycat agent
+func (a copycat) act(agentHistory, oppHistory MoveHistory) (Move, error) {
+    return Cheat, nil
+}
+
+// A grudger agent
+func (a grudger) act(agentHistory, oppHistory MoveHistory) (Move, error) {
+    return Cheat, nil
+}
+
+// A detective agent
+func (a detective) act(agentHistory, oppHistory MoveHistory) (Move, error) {
     return Cheat, nil
 }
 
