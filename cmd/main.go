@@ -41,7 +41,7 @@ func runBattles(agent Actor, opponents []Actor, params BattleParams) Battles {
 
 	for i, opponent := range opponents {
 		result := battle(agent, opponent, params)
-		opponentAgent := opponent.(quidProQuo)
+		opponentAgent := opponent.(Agent)
 		battleResult := Battle{
 			OpponentName: opponentAgent.Name,
 			Score:        result.Agent1ScoreTotal,

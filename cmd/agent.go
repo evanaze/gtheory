@@ -50,7 +50,7 @@ func (a quidProQuo) act(agentHistory, oppHistory MoveHistory) (Move, error) {
 	case Cooperate:
 		return Cooperate, nil
 	default:
-		return 0, errors.New("Invalid move in move history")
+		return 0, errors.New("invalid move in move history")
 	}
 }
 
