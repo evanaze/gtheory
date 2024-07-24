@@ -28,6 +28,7 @@ type Agent struct {
 // An interface to the action of an Agent
 type Actor interface {
 	act(agentHistory, oppHistory MoveHistory) (Move, error)
+	name() string
 }
 
 // Define different default agents
@@ -78,6 +79,13 @@ func (a grudger) act(agentHistory, oppHistory MoveHistory) (Move, error) {
 func (a detective) act(agentHistory, oppHistory MoveHistory) (Move, error) {
 	return Cheat, nil
 }
+
+func (a quidProQuo) name() string      { return a.Name }
+func (a alwaysCooperate) name() string { return a.Name }
+func (a alwaysCheat) name() string     { return a.Name }
+func (a copycat) name() string         { return a.Name }
+func (a grudger) name() string         { return a.Name }
+func (a detective) name() string       { return a.Name }
 
 type BattleResults struct {
 	Agent1             Actor
