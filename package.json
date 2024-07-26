@@ -1,0 +1,25 @@
+{
+  "name": "gtheory",
+  "version": "1.0.0",
+  "description": "Prisoners dilemma game",
+  "main": "tailwind.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/evanaze/gtheory.git"
+  },
+  "author": "Evan Azevedo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/evanaze/gtheory/issues"
+  },
+  "homepage": "https://github.com/evanaze/gtheory#readme",
+  "dependencies": {
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.4.0",
+    "tailwindcss-animate": "^1.0.7"
+  }
+}
